@@ -1,5 +1,5 @@
 self.__uv$config = {
-    prefix: '/static/jade/',
+    prefix: '/static/Azurlitez/',
     bare:'https://szvysskibidibareserver.onrender.com/bare/',
     encodeUrl: Ultraviolet.codec.xor.encode,
     decodeUrl: Ultraviolet.codec.xor.decode,
