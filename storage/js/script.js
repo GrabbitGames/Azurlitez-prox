@@ -1,8 +1,8 @@
 const textOptions = [
-    "best static proxy!",
-    "originally called emerald.",
-    "made by BIW Services!",
-    "supercalifragilisticexpialidocious!"
+    "best roblox website 2024!",
+    "i like skibidi toilet.",
+    "always gamble dont be a quiter!",
+    "im autistic!"
 ];
 
 function changeText() {
