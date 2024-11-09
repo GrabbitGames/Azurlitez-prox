@@ -1,11 +1,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
 
 body {
-    margin: 0;
-    font-family: "Outfit", sans-serif;
-    color: white;
-    text-align: center;
-    background: #28613a;
+            background: url("/bgdark.jpg");
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            transition: all 200ms linear;
+            background-attachment: fixed;
+ 	        background-position: center;
+        
 }
 
 .navbar {
