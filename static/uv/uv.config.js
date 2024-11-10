@@ -1,6 +1,6 @@
 self.__uv$config = {
     prefix: '/static/Azurlitez/',
-    bare:'/bare/',
+    bare:'https://szvysskibidibareserver.onrender.com/bare/',
     encodeUrl: Ultraviolet.codec.xor.encode,
     decodeUrl: Ultraviolet.codec.xor.decode,
     handler: '/static/uv/uv.handler.js',
