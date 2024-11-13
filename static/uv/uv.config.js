@@ -1,6 +1,6 @@
 self.__uv$config = {
     prefix: '/static/Azurlitez/',
-    bare:'https://focus-bare-h0v9gnb9q-aztroyzs-projects.vercel.app/',
+    bare:'https://tomp.app',
     encodeUrl: Ultraviolet.codec.xor.encode,
     decodeUrl: Ultraviolet.codec.xor.decode,
     handler: '/static/uv/uv.handler.js',
