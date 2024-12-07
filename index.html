@@ -59,17 +59,6 @@
             box-shadow: 0 0 10px rgba(160, 160, 255, 0.6);
         }
 
-        /* Styling for the dynamic URL display inside search bar */
-        .search-bar a {
-            color: #5f3fbf;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        .search-bar a:hover {
-            color: #7a45d2;
-        }
-
         /* Styling for iframe */
         #search-results {
             width: 80%;
@@ -85,21 +74,13 @@
     <!-- Search Bar Container -->
     <div id="search-container">
         <form id="uv-form" onsubmit="submitSearch(event)">
-            <input id="uv-search-engine" value="https://www.google.com/search?q=%s" type="hidden"/>
+            <input id="uv-search-engine" value="https://cse.google.com/cse?cx=YOUR_CSE_ID&q=%s" type="hidden"/>
             <input id="uv-address" type="text" class="search-bar" placeholder="Enter URL or search term..." autocomplete="off" />
         </form>
     </div>
 
     <!-- Iframe for displaying search results -->
-    <iframe id="search-results" src="" frameborder="0"></iframe>
-
-    <!-- External scripts -->
-    <script src="/storage/js/script.js"></script>
-    <script src="/static/uv/uv.bundle.js" defer></script>
-    <script src="/static/uv/uv.config.js" defer></script>
-    <script src="/static/register-sw.js" defer></script>
-    <script src="/static/search.js" defer></script>
-    <script src="/static/index.js" defer></script>
+    <iframe id="search-results" src="https://cse.google.com/cse?cx=YOUR_CSE_ID" frameborder="0"></iframe>
 
     <script>
         // Function to submit the search and update the iframe with the URL
@@ -116,7 +97,7 @@
             // Check if it's a valid URL (basic check)
             if (!url.startsWith('http://') && !url.startsWith('https://')) {
                 // If it's not a URL, assume it's a search term
-                url = 'https://www.google.com/search?q=' + encodeURIComponent(query);
+                url = 'https://cse.google.com/cse?cx=YOUR_CSE_ID&q=' + encodeURIComponent(query);
             }
 
             // Set the iframe source to the entered URL or search result
@@ -125,12 +106,8 @@
             // Optionally, update the search bar to show the URL
             document.getElementById('uv-address').value = url;
         }
-
-        // Optional: You can dynamically change text on click if needed
-        function changeText() {
-            document.getElementById("dynamic-text").innerText = "Start searching now!";
-        }
     </script>
 
 </body>
 </html>
+
