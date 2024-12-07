@@ -65,6 +65,13 @@
             z-index: 10;
         }
 
+        /* Iframe for displaying results */
+        #search-results {
+            margin-top: 80px; /* Push iframe below search bar */
+            width: 100%;
+            height: 80vh;
+            border: none;
+        }
     </style>
 </head>
 <body>
@@ -77,24 +84,14 @@
         </form>
     </div>
 
+    <!-- Iframe to load search results -->
+    <iframe id="search-results"></iframe>
+
     <script>
         // Function to check if the string is a valid URL
         function isValidURL(url) {
             const pattern = /^(https?:\/\/)?([a-z0-9-]+\.)+[a-z0-9-]+(\/.*)?$/i;
             return pattern.test(url);
-        }
-
-        // Function to update the search bar with the current URL or placeholder
-        function updateSearchBar() {
-            const currentUrl = window.location.href;
-            const searchBar = document.getElementById('uv-address');
-            
-            // Only set the URL in the search bar if it's a valid URL
-            if (isValidURL(currentUrl)) {
-                searchBar.value = currentUrl;  // Show current URL if it's valid
-            } else {
-                searchBar.value = '';  // Clear the search bar if it's not a valid URL
-            }
         }
 
         // Function to handle search or URL redirection when submitting the form
@@ -106,21 +103,31 @@
 
             let url = query;
 
-            // If it's a valid URL, redirect to that URL
+            // If it's a valid URL, display the URL in the iframe
             if (isValidURL(url)) {
-                window.location.href = url;
+                // Load the URL in the iframe
+                document.getElementById('search-results').src = url;
             } else {
-                // If it's not a URL, assume it's a search term and redirect to Google
+                // If it's not a URL, perform a Google search
                 url = 'https://www.google.com/search?q=' + encodeURIComponent(query);
-                window.location.href = url;
+                document.getElementById('search-results').src = url;
             }
         }
 
         // Update the search bar with the current URL when the page loads
         window.onload = function() {
-            updateSearchBar();
+            const currentUrl = window.location.href;
+            const searchBar = document.getElementById('uv-address');
+            
+            // Only set the URL in the search bar if it's a valid URL
+            if (isValidURL(currentUrl)) {
+                searchBar.value = currentUrl;
+            } else {
+                searchBar.value = '';
+            }
         };
     </script>
+
 
 
 <script src="/storage/js/script.js"></script>
