@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home | Jade</title>
+    <link rel="stylesheet" href="/storage/css/styles.css">
+    <link rel="icon" type="image/x-icon" href="/storage/images/jade.ico">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <meta property="og:title" content="Jade Proxy">
+    <meta property="og:description" content="Simple, Unique, Awesome. Jade.">
+    <meta property="og:image" content="/storage/images/jade.png">
+    <meta property="og:image:width" content="100">
+    <meta property="og:image:height" content="100">
+    <meta property="og:url" content="https://jade.ubg.icu">
+    <meta name="theme-color" content="#28613a">
+    <meta name="msapplication-TileColor" content="#28613a">
+    
+    <style>
+        /* General styling */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        
+        nav {
+            background-color: #28613a;
+            padding: 10px;
+        }
+        
+        nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav ul li {
+            display: inline;
+            margin-right: 20px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        #search-container {
+            margin-top: 100px;
+        }
+
+        #uv-address {
+            padding: 15px;
+            width: 50%;
+            font-size: 18px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        #search-button {
+            padding: 15px;
+            font-size: 18px;
+            background-color: #28613a;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-left: 10px;
+        }
+
+        #search-button:hover {
+            background-color: #3a7f55;
+        }
+
+        #dynamic-text {
+            font-size: 24px;
+            margin-top: 20px;
+            color: #28613a;
+        }
+
+        .desc {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <ul>
+            <li><a href="/">HOME</a></li>
+            <li><a href="/static/embed.html#https://mathsspot.com">ROBLOX</a></li>
+            <li><a href="/credits.html">CREDITS</a></li>
+            <li><a href="/games.html">GAMES</a></li>
+            <li id="current-url"><a href="#">https://jade.ubg.icu</a></li> <!-- Placeholder for current URL -->
+        </ul>
+    </nav>
+    
+    <p id="dynamic-text" onclick="changeText()">Search the web</p>
+    
+    <div id="search-container">
+        <form id="uv-form" onsubmit="submitSearch(event)">
+            <input id="uv-search-engine" value="https://www.google.com/search?q=%s" type="hidden"/>
+            <input id="uv-address" type="text" class="search-bar" placeholder="Enter URL or search term..." />
+            <button type="submit" id="search-button">SEARCH <i class="fa-solid fa-magnifying-glass"></i></button>
+        </form>
+
+        <div class="desc left-margin">
+            <p id="uv-error"></p>
+            <pre id="uv-error-code"></pre>
+        </div>
+    </div>
+
+    <script>
+        // Function to submit the search and update navbar URL
+        function submitSearch(event) {
+            event.preventDefault(); // Prevent form submission
+            
+            const query = document.getElementById('uv-address').value.trim();
+            if (!query) {
+                return;
+            }
+            
+            let url = query;
+            if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                url = 'https://www.google.com/search?q=' + encodeURIComponent(query);
+            }
+            
+            // Update the current URL in the navbar
+            document.getElementById('current-url').innerHTML = `<a href="${url}" target="_blank">${url}</a>`;
+            
+            // Redirect to the search or entered URL
+            window.location.href = url;
+        }
+
+        // Optional: You can dynamically change text on click if needed
+        function changeText() {
+            document.getElementById("dynamic-text").innerText = "Start searching now!";
+        }
+    </script>
+
+    <!-- External scripts -->
+    <script src="/storage/js/script.js"></script>
+    <script src="/static/uv/uv.bundle.js" defer></script>
+    <script src="/static/uv/uv.config.js" defer></script>
+    <script src="/static/register-sw.js" defer></script>
+    <script src="/static/search.js" defer></script>
+    <script src="/static/index.js" defer></script>
+</body>
+</html>
