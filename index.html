@@ -26,6 +26,16 @@
             flex-direction: column;
         }
 
+        /* Search Bar Container */
+        #search-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            position: fixed;
+            top: 20px;
+            z-index: 10;
+        }
+
         /* Search Bar Styling */
         .search-bar {
             width: 70%;
@@ -55,25 +65,16 @@
             color: #aaa;
         }
 
-        /* Center the search bar properly */
-        #search-container {
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            position: fixed;
-            top: 20px;
-            z-index: 10;
-        }
-
         /* Iframe for displaying results */
         #search-results {
-            margin-top: 120px; /* Push iframe below search bar */
+            margin-top: 100px; /* Push iframe below search bar */
             width: 70%;
             max-width: 800px;
             height: 50vh; /* Smaller height for the iframe */
             border: none;
             margin-bottom: 40px; /* Add space below iframe */
         }
+
     </style>
 </head>
 <body>
@@ -129,6 +130,8 @@
             }
         };
     </script>
+
+
 
 
 
