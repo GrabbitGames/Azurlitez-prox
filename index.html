@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Search and Redirect</title>
+    <title>Search and Redirect with History</title>
     <style>
         /* General reset */
         * {
@@ -67,12 +67,45 @@
 
         /* Iframe for displaying results */
         #search-results {
-            margin-top: 100px; /* Push iframe below search bar */
+            margin-top: 100px;
             width: 70%;
             max-width: 800px;
-            height: 50vh; /* Smaller height for the iframe */
+            height: 50vh;
             border: none;
-            margin-bottom: 40px; /* Add space below iframe */
+            margin-bottom: 40px;
+        }
+
+        /* History Container Styling */
+        #history-container {
+            display: none;
+            background-color: #222;
+            padding: 10px;
+            border-radius: 5px;
+            width: 60%;
+            margin-top: 10px;
+            position: absolute;
+            top: 80px;
+            z-index: 1;
+            box-shadow: 0 0 10px rgba(160, 160, 255, 0.7);
+        }
+
+        #history-container a {
+            color: #5f3fbf;
+            text-decoration: none;
+            display: block;
+            padding: 8px;
+            font-size: 16px;
+        }
+
+        #history-container a:hover {
+            background-color: #333;
+            color: #7a45d2;
+        }
+
+        /* Google History Icon */
+        #history-logo {
+            margin-left: 15px;
+            cursor: pointer;
         }
 
     </style>
@@ -85,10 +118,26 @@
             <input id="uv-search-engine" value="https://www.google.com/search?q=%s" type="hidden"/>
             <input id="uv-address" type="text" class="search-bar" placeholder="Enter URL or search term..." autocomplete="off"/>
         </form>
+        <!-- Google History Logo -->
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Google_Chrome_icon_%282013-2023%29.svg/120px-Google_Chrome_icon_%282013-2023%29.svg.png" alt="History" id="history-logo" onclick="toggleHistory()"/>
     </div>
 
-    <!-- Iframe to load search results -->
+    <!-- History Container -->
+    <div id="history-container">
+        <h3>Search History:</h3>
+        <div id="history-list"></div>
+    </div>
+
+    <!-- Iframe for displaying search results -->
     <iframe id="search-results"></iframe>
+
+    <!-- External JS Scripts -->
+    <script src="/storage/js/script.js"></script>
+    <script src="/static/uv/uv.bundle.js" defer></script>
+    <script src="/static/uv/uv.config.js" defer></script>
+    <script src="/static/register-sw.js" defer></script>
+    <script src="/static/search.js" defer></script>
+    <script src="/static/index.js" defer></script>
 
     <script>
         // Function to check if the string is a valid URL
@@ -108,39 +157,78 @@
 
             // If it's a valid URL, display the URL in the iframe
             if (isValidURL(url)) {
-                // Load the URL in the iframe
+                // Load the URL directly into the iframe
                 document.getElementById('search-results').src = url;
+                addToHistory(url); // Add to history if valid URL
             } else {
-                // If it's not a URL, perform a Google search
-                url = 'https://www.google.com/search?q=' + encodeURIComponent(query);
-                document.getElementById('search-results').src = url;
+                // If it's not a URL, perform a search using the UV search engine URL
+                const searchURL = document.getElementById('uv-search-engine').value.replace('%s', encodeURIComponent(query));
+                document.getElementById('search-results').src = searchURL; // Load search results into iframe
+                addToHistory(searchURL); // Add to history for search term
             }
         }
 
-        // Update the search bar with the current URL when the page loads
+        // Add a search or URL to history
+        function addToHistory(url) {
+            // Get the history from localStorage
+            let history = JSON.parse(localStorage.getItem('history')) || [];
+            
+            // Avoid adding duplicate URLs
+            if (history.includes(url)) return;
+
+            // Add the new URL to the history
+            history.unshift(url); // Add to the front of the history
+            if (history.length > 10) history.pop(); // Keep history length limited to 10
+
+            // Save updated history back to localStorage
+            localStorage.setItem('history', JSON.stringify(history));
+
+            // Update the history display
+            updateHistory();
+        }
+
+        // Display the history list
+        function updateHistory() {
+            const historyList = document.getElementById('history-list');
+            const history = JSON.parse(localStorage.getItem('history')) || [];
+
+            // Clear the history display
+            historyList.innerHTML = '';
+
+            // Add each history item to the list
+            history.forEach(function(url) {
+                const link = document.createElement('a');
+                link.href = url;
+                link.target = "_blank"; // Open in new tab
+                link.innerText = url;
+                historyList.appendChild(link);
+            });
+        }
+
+        // Toggle the history container visibility
+        function toggleHistory() {
+            const historyContainer = document.getElementById('history-container');
+            if (historyContainer.style.display === 'none' || historyContainer.style.display === '') {
+                historyContainer.style.display = 'block';
+                updateHistory(); // Update the history list when shown
+            } else {
+                historyContainer.style.display = 'none';
+            }
+        }
+
+        // Initialize history on page load
         window.onload = function() {
+            // Set the current URL to the search bar if it's valid
             const currentUrl = window.location.href;
             const searchBar = document.getElementById('uv-address');
             
-            // Only set the URL in the search bar if it's a valid URL
             if (isValidURL(currentUrl)) {
                 searchBar.value = currentUrl;
-            } else {
-                searchBar.value = '';
             }
+
+            updateHistory(); // Update the history when the page loads
         };
     </script>
 
-
-
-
-
-
-<script src="/storage/js/script.js"></script>
-    <script src="/static/uv/uv.bundle.js" defer></script>
-    <script src="/static/uv/uv.config.js" defer></script>
-    <script src="/static/register-sw.js" defer></script>
-    <script src="/static/search.js" defer></script>
-    <script src="/static/index.js" defer></script>
 </body>
 </html>
