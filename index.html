@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Search and Redirect with History</title>
+    <title>Search and Redirect</title>
     <style>
         /* General reset */
         * {
@@ -21,29 +21,29 @@
             align-items: center;
             min-height: 100vh;
             margin: 0;
-            padding: 0;
-            text-align: center;
+            padding: 20px;
             flex-direction: column;
         }
 
         /* Search Bar Container */
         #search-container {
-            width: 100%;
             display: flex;
+            align-items: center;
             justify-content: center;
-            position: fixed;
-            top: 20px;
-            z-index: 10;
+            width: 100%;
+            background-color: #222;
+            border-radius: 50px;
+            padding: 10px;
+            box-shadow: 0 0 15px rgba(160, 160, 255, 0.7);
         }
 
         /* Search Bar Styling */
         .search-bar {
-            width: 70%;
-            max-width: 800px;
-            padding: 18px 20px;
+            flex: 1;
+            padding: 12px 18px;
             font-size: 18px;
             background: transparent;
-            border: 2px solid #5f3fbf;
+            border: none;
             color: #fff;
             outline: none;
             border-radius: 30px;
@@ -57,81 +57,43 @@
         .search-bar:focus {
             background-color: #333;
             box-shadow: 0 0 10px rgba(160, 160, 255, 0.6);
-            border: 2px solid #7a45d2;
         }
 
-        /* Placeholder Styling */
-        .search-bar::placeholder {
-            color: #aaa;
-        }
-
-        /* Iframe for displaying results */
-        #search-results {
-            margin-top: 100px;
-            width: 70%;
-            max-width: 800px;
-            height: 50vh;
-            border: none;
-            margin-bottom: 40px;
-        }
-
-        /* History Container Styling */
-        #history-container {
-            display: none;
-            background-color: #222;
-            padding: 10px;
-            border-radius: 5px;
-            width: 60%;
-            margin-top: 10px;
-            position: absolute;
-            top: 80px;
-            z-index: 1;
-            box-shadow: 0 0 10px rgba(160, 160, 255, 0.7);
-        }
-
-        #history-container a {
+        /* Styling for the dynamic URL display inside search bar */
+        .search-bar a {
             color: #5f3fbf;
             text-decoration: none;
-            display: block;
-            padding: 8px;
-            font-size: 16px;
+            font-weight: bold;
         }
 
-        #history-container a:hover {
-            background-color: #333;
+        .search-bar a:hover {
             color: #7a45d2;
         }
 
-        /* Google History Icon */
-        #history-logo {
-            margin-left: 15px;
-            cursor: pointer;
+        /* Styling for iframe */
+        #search-results {
+            width: 80%;
+            height: 600px;
+            margin-top: 20px;
+            border: 2px solid #333;
+            border-radius: 10px;
         }
-
     </style>
 </head>
 <body>
 
-    <!-- Search Bar Container (Fixed to Top) -->
+    <!-- Search Bar Container -->
     <div id="search-container">
         <form id="uv-form" onsubmit="submitSearch(event)">
             <input id="uv-search-engine" value="https://www.google.com/search?q=%s" type="hidden"/>
-            <input id="uv-address" type="text" class="search-bar" placeholder="Enter URL or search term..." autocomplete="off"/>
+            <input id="uv-address" type="text" class="search-bar" placeholder="Enter URL or search term..." autocomplete="off" />
         </form>
-        <!-- Google History Logo -->
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Google_Chrome_icon_%282013-2023%29.svg/120px-Google_Chrome_icon_%282013-2023%29.svg.png" alt="History" id="history-logo" onclick="toggleHistory()"/>
-    </div>
-
-    <!-- History Container -->
-    <div id="history-container">
-        <h3>Search History:</h3>
-        <div id="history-list"></div>
     </div>
 
     <!-- Iframe for displaying search results -->
-    <iframe id="search-results"></iframe>
+    <iframe id="search-results" src="" frameborder="0"></iframe>
 
-    <!-- External JS Scripts -->
+    <!-- External scripts -->
     <script src="/storage/js/script.js"></script>
     <script src="/static/uv/uv.bundle.js" defer></script>
     <script src="/static/uv/uv.config.js" defer></script>
@@ -140,94 +102,34 @@
     <script src="/static/index.js" defer></script>
 
     <script>
-        // Function to check if the string is a valid URL
-        function isValidURL(url) {
-            const pattern = /^(https?:\/\/)?([a-z0-9-]+\.)+[a-z0-9-]+(\/.*)?$/i;
-            return pattern.test(url);
-        }
-
-        // Function to handle search or URL redirection when submitting the form
+        // Function to submit the search and update the iframe with the URL
         function submitSearch(event) {
             event.preventDefault(); // Prevent form submission
-
+            
             const query = document.getElementById('uv-address').value.trim();
-            if (!query) return;
-
+            if (!query) {
+                return;
+            }
+            
             let url = query;
 
-            // If it's a valid URL, display the URL in the iframe
-            if (isValidURL(url)) {
-                // Load the URL directly into the iframe
-                document.getElementById('search-results').src = url;
-                addToHistory(url); // Add to history if valid URL
-            } else {
-                // If it's not a URL, perform a search using the UV search engine URL
-                const searchURL = document.getElementById('uv-search-engine').value.replace('%s', encodeURIComponent(query));
-                document.getElementById('search-results').src = searchURL; // Load search results into iframe
-                addToHistory(searchURL); // Add to history for search term
-            }
-        }
-
-        // Add a search or URL to history
-        function addToHistory(url) {
-            // Get the history from localStorage
-            let history = JSON.parse(localStorage.getItem('history')) || [];
-            
-            // Avoid adding duplicate URLs
-            if (history.includes(url)) return;
-
-            // Add the new URL to the history
-            history.unshift(url); // Add to the front of the history
-            if (history.length > 10) history.pop(); // Keep history length limited to 10
-
-            // Save updated history back to localStorage
-            localStorage.setItem('history', JSON.stringify(history));
-
-            // Update the history display
-            updateHistory();
-        }
-
-        // Display the history list
-        function updateHistory() {
-            const historyList = document.getElementById('history-list');
-            const history = JSON.parse(localStorage.getItem('history')) || [];
-
-            // Clear the history display
-            historyList.innerHTML = '';
-
-            // Add each history item to the list
-            history.forEach(function(url) {
-                const link = document.createElement('a');
-                link.href = url;
-                link.target = "_blank"; // Open in new tab
-                link.innerText = url;
-                historyList.appendChild(link);
-            });
-        }
-
-        // Toggle the history container visibility
-        function toggleHistory() {
-            const historyContainer = document.getElementById('history-container');
-            if (historyContainer.style.display === 'none' || historyContainer.style.display === '') {
-                historyContainer.style.display = 'block';
-                updateHistory(); // Update the history list when shown
-            } else {
-                historyContainer.style.display = 'none';
-            }
-        }
-
-        // Initialize history on page load
-        window.onload = function() {
-            // Set the current URL to the search bar if it's valid
-            const currentUrl = window.location.href;
-            const searchBar = document.getElementById('uv-address');
-            
-            if (isValidURL(currentUrl)) {
-                searchBar.value = currentUrl;
+            // Check if it's a valid URL (basic check)
+            if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                // If it's not a URL, assume it's a search term
+                url = 'https://www.google.com/search?q=' + encodeURIComponent(query);
             }
 
-            updateHistory(); // Update the history when the page loads
-        };
+            // Set the iframe source to the entered URL or search result
+            document.getElementById('search-results').src = url;
+
+            // Optionally, update the search bar to show the URL
+            document.getElementById('uv-address').value = url;
+        }
+
+        // Optional: You can dynamically change text on click if needed
+        function changeText() {
+            document.getElementById("dynamic-text").innerText = "Start searching now!";
+        }
     </script>
 
 </body>
